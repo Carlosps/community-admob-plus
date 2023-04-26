@@ -1,5 +1,6 @@
 package admob.plus.core;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -27,6 +28,7 @@ public interface Context {
     }
 
     boolean has(@NonNull String name);
+    Activity getActivity();
 
     @Nullable
     Object opt(@NonNull String name);

@@ -2,6 +2,8 @@ package admob.plus.cordova;
 
 import android.app.Activity;
 import android.content.res.Resources;
+import android.graphics.Point;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -146,7 +148,7 @@ public class ExecuteContext implements Context {
             return AdSize.SMART_BANNER;
         }
         String adaptive = adSizeObj.optString("adaptive");
-        int w = Helper.pxToDp(adSizeObj.has("width") ? adSizeObj.optInt("width") : Resources.getSystem().getDisplayMetrics().widthPixels);
+        int w = adSizeObj.has("width") ? adSizeObj.optInt("width") : getScreenWidthInPixels();
         if ("inline".equals(adaptive)) {
             if (adSizeObj.has("maxHeight")) {
                 return AdSize.getInlineAdaptiveBannerAdSize(w, Helper.pxToDp(adSizeObj.optInt("maxHeight")));
@@ -162,6 +164,20 @@ public class ExecuteContext implements Context {
             }
         }
         return new AdSize(w, Helper.pxToDp(adSizeObj.optInt("height")));
+    }
+
+    int pxToDp(int px) {
+        float density = getActivity().getResources().getDisplayMetrics().density;
+        return (int) (px / density + 0.5f);
+    }
+
+    int getScreenWidthInPixels() {
+        android.content.Context androidContext = getActivity();
+        WindowManager windowManager = (WindowManager) androidContext.getSystemService(android.content.Context.WINDOW_SERVICE);
+        Point size = new Point();
+        windowManager.getDefaultDisplay().getSize(size);
+        int screenWidthInPixels = size.x;
+        return pxToDp(screenWidthInPixels);
     }
 
     public Activity getActivity() {
